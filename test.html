@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Mapa Astral</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #764ba2;
+            text-align: center;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: #f5f8ff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste do Mapa Astral</h1>
+    
+    <form id="astralForm">
+        <div>
+            <label for="name">Nome Completo:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div>
+            <label for="birthDate">Data de Nascimento:</label>
+            <input type="date" id="birthDate" name="birthDate" required>
+        </div>
+        
+        <div>
+            <label for="birthTime">Hora de Nascimento:</label>
+            <input type="time" id="birthTime" name="birthTime" required>
+        </div>
+        
+        <div>
+            <label for="birthPlace">Local de Nascimento:</label>
+            <input type="text" id="birthPlace" name="birthPlace" placeholder="Cidade, Estado, País" required>
+        </div>
+        
+        <button type="submit">Gerar Mapa Astral</button>
+    </form>
+    
+    <div id="result">
+        <h2>Resultado:</h2>
+        <pre id="resultContent"></pre>
+    </div>
+    
+    <script>
+        document.getElementById('astralForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                birthDate: document.getElementById('birthDate').value,
+                birthTime: document.getElementById('birthTime').value,
+                birthPlace: document.getElementById('birthPlace').value
+            };
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/astral-map', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('resultContent').textContent = JSON.stringify(data, null, 2);
+                document.getElementById('result').style.display = 'block';
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('resultContent').textContent = 'Erro ao gerar mapa astral: ' + error.message;
+                document.getElementById('result').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
+
